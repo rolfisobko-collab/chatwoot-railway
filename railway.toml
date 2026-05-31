@@ -3,6 +3,6 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "bundle exec rails server -p $PORT -b 0.0.0.0"
+startCommand = "bundle exec rails db:chatwoot_prepare && bundle exec rails server -p $PORT -b 0.0.0.0"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
