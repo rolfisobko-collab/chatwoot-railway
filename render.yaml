@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: chatwoot-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: sh /app/start.sh
+    healthCheckPath: /auth/sign_in
+    envVars:
+      - key: SECRET_KEY_BASE
+        value: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
+      - key: RAILS_ENV
+        value: production
+      - key: NODE_ENV
+        value: production
+      - key: INSTALLATION_ENV
+        value: docker
+      - key: ACTIVE_STORAGE_SERVICE
+        value: local
+      - key: FORCE_SSL
+        value: false
+      - key: ENABLE_ACCOUNT_SIGNUP
+        value: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chatwoot-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: chatwoot-redis
+          type: redis
+          property: connectionString
+      - key: FRONTEND_URL
+        fromService:
+          name: chatwoot-web
+          type: web
+          property: host
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: worker
+    name: chatwoot-worker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: bundle exec sidekiq -C config/sidekiq.yml
+    envVars:
+      - key: SECRET_KEY_BASE
+        value: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
+      - key: RAILS_ENV
+        value: production
+      - key: NODE_ENV
+        value: production
+      - key: INSTALLATION_ENV
+        value: docker
+      - key: ACTIVE_STORAGE_SERVICE
+        value: local
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chatwoot-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: chatwoot-redis
+          type: redis
+          property: connectionString
+
+databases:
+  - name: chatwoot-db
+    databaseName: chatwoot
+    user: chatwoot
+
+  - name: chatwoot-redis
+    type: redis
