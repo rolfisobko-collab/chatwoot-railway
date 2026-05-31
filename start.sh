@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 echo "==> Running DB migrations..."
 bundle exec rails db:chatwoot_prepare || true
