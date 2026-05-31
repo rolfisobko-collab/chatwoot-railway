@@ -30,11 +30,8 @@ services:
           type: redis
           property: connectionString
       - key: FRONTEND_URL
-        fromService:
-          name: chatwoot-web
-          type: web
-          property: host
-          envVarKey: RENDER_EXTERNAL_URL
+        generateValue: false
+        value: https://chatwoot-web.onrender.com
 
   - type: worker
     name: chatwoot-worker
@@ -62,10 +59,13 @@ services:
           type: redis
           property: connectionString
 
+  - type: redis
+    name: chatwoot-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+
 databases:
   - name: chatwoot-db
     databaseName: chatwoot
     user: chatwoot
-
-  - name: chatwoot-redis
-    type: redis
+    plan: free
